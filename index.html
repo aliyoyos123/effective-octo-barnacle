@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>You Are An Idiot! - Ultimate Annoyance</title>
+  <style>
+    body {
+      background-color: black;
+      color: lime;
+      text-align: center;
+      font-size: 50px;
+      margin-top: 20%;
+    }
+  </style>
+  <script>
+    // Global array to keep track of our popup windows and their movement properties
+    let popupWindows = [];
+    const NUM_WINDOWS = 10; // Increased number of windows
+
+    // Opens new pop-up windows until we reach the desired count
+    function openPopups() {
+      while (popupWindows.length < NUM_WINDOWS) {
+        let newWin = window.open("", "", "width=300,height=200,resizable=yes,scrollbars=yes");
+        if (newWin) {
+          newWin.document.write(`
+            <html>
+              <head>
+                <title>Annoying Popup</title>
+                <style>
+                  body {
+                    background-color: black;
+                    color: red;
+                    font-size: 30px;
+                    text-align: center;
+                    margin-top: 50px;
+                  }
+                </style>
+              </head>
+              <body>
+                You Are An Idiot!
+              </body>
+            </html>
+          `);
+          // Each popup gets random initial position and speed
+          popupWindows.push({
+            win: newWin,
+            x: Math.random() * (screen.width - 300),
+            y: Math.random() * (screen.height - 200),
+            dx: (Math.random() * 20 + 10) * (Math.random() < 0.5 ? -1 : 1),
+            dy: (Math.random() * 20 + 10) * (Math.random() < 0.5 ? -1 : 1)
+          });
+        }
+      }
+    }
+
+    // Animates all open pop-up windows by moving them on the screen
+    function animatePopups() {
+      setInterval(function() {
+        popupWindows.forEach(function(obj) {
+          if (obj.win && !obj.win.closed) {
+            // Move the window to its current coordinates
+            obj.win.moveTo(obj.x, obj.y);
+            // Update coordinates for the next move
+            obj.x += obj.dx;
+            obj.y += obj.dy;
+            // Bounce off the horizontal edges
+            if (obj.x < 0 || obj.x + 300 > screen.width) {
+              obj.dx = -obj.dx;
+            }
+            // Bounce off the vertical edges
+            if (obj.y < 0 || obj.y + 200 > screen.height) {
+              obj.dy = -obj.dy;
+            }
+          }
+        });
+      }, 50); // Update positions every 50ms for a more frantic movement
+    }
+
+    // Plays two looping sounds to add to the noise
+    function playNoisySounds() {
+      // Primary sound (troll song)
+      let audio1 = new Audio('https://www.myinstants.com/media/sounds/troll-song.mp3');
+      audio1.loop = true;
+      audio1.volume = 1.0; // Maximum volume
+      audio1.play();
+
+      // Secondary sound (for example, an evil laugh)
+      let audio2 = new Audio('https://www.myinstants.com/media/sounds/evil-laugh.mp3');
+      audio2.loop = true;
+      audio2.volume = 0.8;
+      // Slight delay before playing the second sound to layer the effects
+      setTimeout(() => {
+        audio2.play();
+      }, 1000);
+    }
+
+    // Checks periodically if any pop-ups have been closed and reopens them if needed
+    function maintainPopups() {
+      setInterval(function() {
+        // Remove any closed windows from our tracking array
+        popupWindows = popupWindows.filter(obj => obj.win && !obj.win.closed);
+        // Open more popups if necessary
+        if (popupWindows.length < NUM_WINDOWS) {
+          openPopups();
+        }
+      }, 2000);
+    }
+
+    // Start all annoying behaviors once the main page loads
+    window.onload = function() {
+      openPopups();
+      animatePopups();
+      playNoisySounds();
+      maintainPopups();
+    };
+  </script>
+</head>
+<body>
+  <h1>You Are An Idiot!</h1>
+</body>
+</html>
